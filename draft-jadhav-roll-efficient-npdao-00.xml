@@ -132,8 +132,7 @@
 
 <middle>
     <section title="Introduction">
-        <t> 
-        RPL <xref target="RFC6550"/> specifies a proactive distance-vector
+        <t> RPL <xref target="RFC6550"/> specifies a proactive distance-vector
         based routing scheme. The specification has an optional messaging in
         the form of DAO messages using which the 6LBR can learn route towards
         any of the nodes. In storing mode, DAO messages would result in routing
