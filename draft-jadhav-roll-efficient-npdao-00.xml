@@ -448,8 +448,18 @@
             document in the subsequent section will explain the message
             format changes to handle this downward flow of NPDAO.  </t>
         </section>
-        <section title="NPDAO message format changes">
-            <t>Every RPL message is divided into base message fields and additional Options. The base fields apply to the message as a whole and options are attributed to the message type. As an example, a DAO message may be attributed by one or more "RPL Target" options which specifies the reachability information for the given targets. Similarly, a Transit Information option may be associated with a set of RPL Target options.</t>
+        <section title="DAO message format changes">
+            <t>Every RPL message is divided into base message fields and
+            additional Options. The base fields apply to the message as a whole
+            and options are appended to add message/use-case specific
+            attributes. As an example, a DAO message may be attributed by one
+            or more "RPL Target" options which specifies the reachability
+            information for the given targets. Similarly, a Transit Information
+            option may be associated with a set of RPL Target options.</t>
+
+            <t>The draft proposes a change in DAO message to contain "Invalidate previous route" (I) bit. This I-bit which is carried in regular DAO message signals the common ancestor to generate a downstream NPDAO on behalf of the target node. The I-bit can be carried in the transit container option which augments the given set of RPL Target(s).</t>
+
+            <t>PUT THE TRANSIT INFORMATION OPTION details here TODO </t>
         </section>
         <section title="Example messaging">
         </section>
