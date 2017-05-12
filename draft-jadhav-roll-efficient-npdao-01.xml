@@ -1,0 +1,689 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!-- This template is for creating an Internet Draft using xml2rfc,
+     which is available here: http://xml.resource.org. -->
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!-- One method to get references from the online citation libraries.
+     There has to be one entity for each item to be referenced. 
+     An alternate method (rfc include) is described in the references. -->
+
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC3552 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.3552.xml">
+<!ENTITY RFC6550 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6550.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<!-- used by XSLT processors -->
+<!-- For a complete list and description of processing instructions (PIs), 
+     please see http://xml.resource.org/authoring/README.html. -->
+<!-- Below are generally applicable Processing Instructions (PIs) that most I-Ds might want to use.
+     (Here they are set differently than their defaults in xml2rfc v1.32) -->
+<?rfc strict="yes" ?>
+<!-- give errors regarding ID-nits and DTD validation -->
+<!-- control the table of contents (ToC) -->
+<?rfc toc="yes"?>
+<!-- generate a ToC -->
+<?rfc tocdepth="4"?>
+<!-- the number of levels of subsections in ToC. default: 3 -->
+<!-- control references -->
+<?rfc symrefs="yes"?>
+<!-- use symbolic references tags, i.e, [RFC2119] instead of [1] -->
+<?rfc sortrefs="yes" ?>
+<!-- sort the reference entries alphabetically -->
+<!-- control vertical white space 
+     (using these PIs as follows is recommended by the RFC Editor) -->
+<?rfc compact="yes" ?>
+<!-- do not start each main section on a new page -->
+<?rfc subcompact="no" ?>
+<!-- keep one blank line between list items -->
+<!-- end of list of popular I-D processing instructions -->
+<rfc category="std" docName="draft-jadhav-roll-efficient-npdao-01" ipr="trust200902">
+  <!-- category values: std, bcp, info, exp, and historic
+     ipr values: full3667, noModification3667, noDerivatives3667
+     you can add the attributes updates="NNNN" and obsoletes="NNNN" 
+     they will automatically be output with "(if approved)" -->
+
+  <!-- ***** FRONT MATTER ***** -->
+
+  <front>
+    <!-- The abbreviated title is used in the page header - it is only necessary if the 
+         full title is longer than 39 characters -->
+
+    <title abbrev="No-Path DAO modifications">No-Path DAO modifications</title>
+    
+    <author fullname="Rahul Arvind Jadhav" initials="R.A." role="editor" surname="Jadhav">
+      <organization>Huawei Tech</organization>
+      <address>
+        <postal>
+          <street>Kundalahalli Village, Whitefield,</street>
+          <city>Bangalore</city>
+          <region>Karnataka</region>
+          <code>560037</code>
+          <country>India</country>
+        </postal>
+        <phone>+91-080-49160700</phone>
+        <email>rahul.ietf@gmail.com</email>
+      </address>
+    </author>
+    <author fullname="Rabi Narayan Sahoo" initials="R.N." surname="Sahoo">
+      <organization>Huawei Tech</organization>
+      <address>
+        <postal>
+          <street>Kundalahalli Village, Whitefield, </street>
+          <city>Bangalore</city>
+          <region>Karnataka</region>
+          <code>560037</code>
+          <country>India</country>
+        </postal>
+        <phone>+91-080-49160700</phone>
+        <email>rabinarayans@huawei.com</email>
+      </address>
+    </author>
+    <author initials="Z" surname="Cao" fullname="Zhen Cao">
+      <organization>Huawei Tech</organization>
+      <address>
+        <postal>
+          <street>W Chang'an Ave</street>
+          <city>Beijing</city>
+          <code>560037</code>
+          <country>China</country>
+        </postal>
+        <email>zhencao.ietf@gmail.com</email>
+      </address>
+    </author>
+
+    <date year="2017" />
+
+    <!-- If the month and year are both specified and are the current ones, xml2rfc will fill 
+         in the current day for you. If only the current year is specified, xml2rfc will fill 
+     in the current day and month for you. If the year is not the current one, it is 
+     necessary to specify at least a month (xml2rfc assumes day="1" if not specified for the 
+     purpose of calculating the expiry date).  With drafts it is normally sufficient to 
+     specify just the year. -->
+
+    <!-- Meta-data Declarations -->
+
+    <area>General</area>
+
+    <workgroup>ROLL</workgroup>
+
+    <!-- WG name at the upperleft corner of the doc,
+         IETF is fine for individual submissions.  
+     If this element is not present, the default is "Network Working Group",
+         which is used by the RFC Editor as a nod to the history of the IETF. -->
+
+    <keyword>template</keyword>
+
+    <!-- Keywords will be incorporated into HTML output
+         files in a meta tag but they have no effect on text or nroff
+         output. If you submit your draft to the RFC Editor, the
+         keywords will be used for the search engine. -->
+
+    <abstract>
+      <t>This document describes the problems associated with the use of
+	  No-Path DAO messaging in RPL and a signaling changes to improve route
+	  invalidation efficiency.</t>
+    </abstract>
+  </front>
+
+<middle>
+    <section title="Introduction">
+        <t> RPL <xref target="RFC6550"/> specifies a proactive distance-vector
+        based routing scheme. The specification has an optional messaging in
+        the form of DAO messages using which the 6LBR can learn route towards
+        any of the nodes. In storing mode, DAO messages would result in routing
+        entries been created on all intermediate hops from the node's parent
+        all the way towards the 6LBR.</t>
+
+		<t>RPL allows use of No-Path DAO (NPDAO) messaging to invalidate a
+		routing path corresponding to the given target, thus releasing
+		resources utilized on that path.  A No-Path DAO is a DAO message with
+		route lifetime of zero, signaling route invalidation for the given
+		target.  This document explains the problems associated with the
+		current use of NPDAO messaging and also discusses the requirements for
+		an optimized No-Path DAO messaging scheme. The signalling change
+		specified fulfills all mentioned requirements of an optimized NPDAO
+		messaging.</t>
+
+		<t>6TiSCH architecture <xref target="I-D.ietf-6tisch-architecture"/>
+		leverages RPL and specifies use of non-storing and storing MOP for its
+		routing operation. Thus an improvement in NPDAO messaging will help
+		optimize 6TiSCH based networks.</t>
+
+        <section title="Requirements Language and Terminology">
+            <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
+            NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL"
+            in this document are to be interpreted as described in <xref
+            target="RFC2119">RFC 2119</xref>.</t>
+
+			<t>The document only caters to the RPL's storing mode of operation
+			(MOP).  The non-storing MOP does not require use of NPDAO for route
+			invalidation since routing entries are not maintained on 6LRs.</t>
+
+            <t>Common Ancestor node: 6LR node which is the first common node on
+            the old and new path for the child node.</t>
+
+            <t>NPDAO: No-Path DAO. A DAO message which has target with lifetime
+            0.</t>
+
+            <t>Reverse NPDAO: A No-Path DAO message which traverses downstream
+            in the network.</t>
+
+            <t>Regular DAO: A DAO message with non-zero lifetime.</t>
+            
+            <t>This document also uses terminology described in <xref
+            target="RFC6550"/>.</t>
+        </section>
+
+        <section anchor="current_npdao" title="Current No-Path DAO messaging">
+			<t>RPL introduced No-Path DAO messaging in the storing mode so that
+			the node switching its current parent can inform its parents and
+			ancestors to invalidate the existing route. Subsequently parents or
+			ancestors would release any resources (such as the routing entry)
+			it maintains on behalf of target node. The NPDAO message always
+			traverses the RPL tree in upward direction, originating at the
+			target node itself.</t>
+
+            <t>For the rest of this document consider the following topology:
+            </t>
+
+            <t> <figure align="center" anchor="sample_top" title="Sample
+            topology"> <artwork align="center"><![CDATA[
+     (6LBR)
+        |
+        |
+        |
+       (A)
+       / \
+      /   \
+     /     \
+   (G)     (H)
+    |       |
+    |       |
+    |       |
+   (B)     (C)
+     \      ;
+      \    ;
+       \  ;
+        (D)
+        / \
+       /   \
+      /     \
+    (E)     (F)
+        ]]></artwork> </figure> </t>
+        
+            <t> Node (D) is connected via preferred parent (B). (D) has an
+            alternate path via (C) towards the BR. Node (A) is the common ancestor
+            for (D) for paths through (B)-(G) and (C)-(H). When (D) switches from
+            (B) to (C), [RFC6550] suggests sending No-Path DAO to (B) and
+            regular DAO to (C).</t>
+        </section>  
+
+        <section title="Cases when No-Path DAO may be used">
+            <t> There are following cases in which a node switches its parent
+            and may employ No-Path DAO messaging:</t>
+
+            <t>Case I: Current parent becomes unavailable because of transient
+            or permanent link or parent node failure.</t>
+
+            <t>Case II: The node finds a better parent node i.e. the metrics of
+            another parent is better than its current parent.</t>
+
+            <t>Case III: The node switches to a new parent whom it "thinks" has
+            a better metric but does not in reality.</t>
+
+            <t>The usual steps of operation when the node switches the parent
+            is that the node sends a No-Path DAO message via its current parent
+            to invalidate its current route and subsequently it tries to
+            establish a new routing path by sending a new DAO via its new
+            parent.</t>       
+        </section> 
+
+        <section title="Why No-Path DAO is important?"> 
+            <t>Nodes in LLNs may be resource constrained. There is limited
+            memory available and routing entry records are the one of the
+            primary elements occupying dynamic memory in the nodes. Route
+            invalidation helps 6LR nodes to decide which entries could be
+            discarded to better achieve resource utilization in case of
+            contention. Thus it becomes necessary to have efficient route
+            invalidation mechanism. Also note that a single parent switch may
+            result in a "sub-tree" switching from one parent to another. Thus
+            the route invalidation needs to be done on behalf of the sub-tree
+            and not the switching node alone. In the above example, when Node
+            (D) switches parent, the route invalidation needs to be done for
+            (D), (E) and (F). Thus without efficient route invalidation, a 6LR
+            may have to hold a lot of unwanted route entries.</t>
+        </section> 
+    </section>
+
+	<section anchor="current_npdao_problems" title="Problems with current
+	No-Path DAO messaging"> 
+        <section title="Lost NP-DAO due to link break to the previous parent">
+            <t>When a node switches its parent, the NPDAO is to be sent via
+            its previous parent and a regular DAO via its new parent. In cases
+            where the node switches its parent because of transient or
+            permanent parent link/node failure then the NPDAO message is bound
+            to fail. RPL assumes communication link with the previous parent
+            for No-Path DAO messaging.</t>
+
+            <t>RPL allows use of route lifetime to remove unwanted routes in
+            case the routes could not be refreshed. But route lifetimes in case
+            of LLNs could be substantially high and thus the route entries
+            would be stuck for long.</t>
+        </section>
+
+		<section title="Invalidate routes to dependent nodes of the switching
+		node">
+			<t>No-path DAO is sent by the node who has switched the parent but
+			it does not work for the dependent child nodes below it. The
+			specification does not specify how route invalidation will work for
+			sub-childs, resulting in stale routing entries on behalf of the
+			sub-childs on the previous route. The only way for 6LR to
+			invalidate the route entries for dependent nodes would be to use
+			route lifetime expiry which could be substantially high for
+			LLNs.</t>
+
+			<t> In the example topology, when Node (D) switches its parent,
+			Node (D) generates an NPDAO on its behalf. Post switching, Node (D)
+			transmits a DIO with incremented DTSN so that child nodes, node (E)
+			and (F), generate DAOs to trigger route update on the new path for
+			themselves. There is no NPDAO generated by these child nodes
+			through the previous path resulting in stale entries on nodes (B)
+			and (G) for nodes (E) and (F).</t>
+        </section>
+
+		<section title="Route downtime caused by asynchronous operation of
+		NPDAO and DAO">
+            <t> A switching node may generate both an NPDAO and DAO via two
+            different paths at almost the same time. There is a possibility
+            that an NPDAO generated may invalidate the previous route and the
+            regular DAO sent via the new path gets lost on the way. This may
+            result in route downtime thus impacting downward traffic for the
+            switching node. In the example topology, consider Node (D) switches
+            from parent (B) to (C) because the metrics of the path via (C) are
+            better. Note that the previous path via (B) may still be available
+            (albeit at relatively bad metrics). An NPDAO sent from previous
+            route may invalidate the existing route whereas there is no way to
+            determine whether the new DAO has successfully updated the route
+            entries on the new path.</t>            
+
+            <t>An implementation technique to avoid this problem is to further
+            delay the route invalidation by a fixed time interval after
+            receiving an NPDAO, considering the time taken for the new path to
+            be established. Coming up with such a time interval is tricky since
+            the new route may also not be available and it may subsequently
+            require more parent switches to establish a new path.</t>
+        </section>
+    </section>
+
+    <section title="Requirements for the No-Path DAO Optimization">
+
+		<section title="Req#1: Tolerant to the link failures to the previous
+		parents">
+            <t>When the switching node send the NP-DAO message to the previous
+            parent, it is normal that the link to the previous parent is prone
+            to failure.  Therefore, it is required that the NP-DAO message MUST
+            be tolerant to the link failure during the switching.</t>
+        </section>
+
+		<section title="Req#2: Dependent nodes route invalidation on parent
+		switching">
+            <t>While switching the parent node and sending NP-DAO message, it
+            is required that the routing entries to the dependent nodes of the
+            switching node will be updated accordingly on the previous parents
+            and other relevant upstream nodes.</t>
+        </section>
+
+		<section title="Req#3: No impact on traffic while NP-DAO operation in
+		progress">
+            <t>While sending the NP-DAO and DAO messages, it is possible that
+            the NP-DAO successfully invalidates the previous path, while the
+            newly sent DAO gets lost (new path not set up successfully). This
+            will result into downstream unreachability to the current switching
+            node. Therefore, it is desirable that the NP-DAO is synchronized
+            with the DAO to avoid the risk of route downtime.</t>
+        </section>
+    </section>
+
+	<!--	Too Confusing section and may not be needed now... If required this can be added in Appendix.
+    <section title="Existing Solution">
+		<section title="NP-DAO can be generated by the parent node who detects
+		link failure to the child">
+            <t>RPL states mechanisms which could be utilized to clear DAO
+            states in a sub-DODAG. [RFC6550] Section 11.2.2.3 states "With DAO
+            inconsistency loop recovery, a packet can be used to recursively
+            explore and clean up the obsolete DAO states along a
+            sub-DODAG".</t>
+
+            <t>Thus in the sample topology in Figure 1, when Node (B) detects
+            link failure to (D), (B) has an option of generating an NP-DAO on
+            behalf of Node (D) and its sub-childs, (E) and (F).</t>
+
+            <t>This section explains why generation of an NP-DAO in such cases
+            may not function as desired. Primarily the DAO state information in
+            the form of Path Sequence plays a major role here. Every target is
+            associated with a Path Sequence number which relates to the latest
+            state of the target. <xref target="RFC6550"/> Section 7.1 explains
+            the semantics of Path Sequence number. The target node increments
+            the Path Sequence number every time it generates a new DAO. The
+            router nodes en-route utilize this Path Sequence number to decide
+            the freshness of target information. If a non-target node has to
+            generate an NP-DAO then it could use following two possibilities
+            with Path Sequence number: </t>
+
+            <t>Let the Path Sequence number of old regular DAO that flowed
+            through (B) be x. The subsequent regular DAO generated by Node (D)
+            will have sequence number x+1.</t>
+
+            <t>i. Node (B) uses the previous Path Sequence number from the
+            regular DAO i.e. NP-DAO(pathseq=x)</t>
+
+            <t>ii. Node (B) increments the Path Sequence number i.e.
+            NP-DAO(pathseq=x+1)</t>
+
+            <t>In case i, the NP-DAO(pathseq=x) will be dropped by all the
+            intermediate nodes since the semantics of Path Sequence number
+            dictates that any DAO with an older Path Sequence number be
+            dropped.</t>
+
+            <t>In case ii, there is a risk that the NP-DAO(pathseq=x+1)
+            traverses up the DODAG and invalidates all the routes till the root
+            and then the regular DAO(pathseq=x+1) from the target traverses
+            upwards. In this case the regular DAO(pathseq=x+1) will be dropped
+            from common ancestor node to the root. This will result in route
+            downtime.</t>
+
+            <t>Another problem with this scheme is its dependence on the
+            upstream neighbor to detect that the downstream neighbor is
+            unavailable. There are two possibilities by which such a detection
+            might be put to work:</t>
+
+            <t>i. There is P2P traffic from the previous sub-DODAG to any of
+            nodes in the sub-tree which has switched the path. In the above
+            example, lets consider that Node (G) has P2P traffic for either of
+            nodes (D), (E), or (F). In this case, Node (B) will detect
+            forwarding error while forwarding the packets from Node (B) to (D).
+            But dependence on P2P traffic may not be an optimal way to solve
+            this problem considering the reactive approach of the scheme. The
+            P2P traffic pattern might be sparse and thus such a detection might
+            kick-in too late.</t>
+
+            <t>ii. The other case is where Node (B) explicitly employs some
+            mechanism to probe directly attached downstream child nodes. Such
+            kind of schemes are seldom used.</t>
+        </section>
+
+        <section title="NP-DAO can be generated once the link is restored to
+        the previous parent">
+            <t>This scheme solves a specific scenario of transient links. The
+            child node can detect that the connection to previous parent is
+            restored and then transmit an NP-DAO to the previous parent to
+            invalidate the route. This scheme is stateful, thus requires more
+            memory and solves a specific scenario.</t>
+        </section>
+    </section>
+	-->
+    <section title="Proposed changes to NPDAO signaling">
+        <section title="Change in NPDAO semantics">
+			<t>As described in <xref target="current_npdao"/>, currently the
+			NPDAO originates at the node switching the parent and traverses
+			upstream towards the root. In order to solve the problems as
+			mentioned in <xref target="current_npdao_problems"/>, the draft
+			proposes to change the way NPDAO originates and traverses the
+			network. The proposed NPDAO originates at a common ancestor node
+			between the new and old path. The trigger for the common ancestor
+			node to generate this NPDAO is the change in the next hop for the
+			node on reception of an update message in the form of regular DAO
+			for the target.</t>
+
+            <t>In the <xref target="sample_top"/>, when node D decides to
+            switch the path from B to C, it sends a regular DAO to node C with
+            reachability information containing target as address of D and
+            a incremented path sequence number. Node C will update the
+            routing table based on the reachability information in DAO and
+            in turn generate another DAO with the same reachability
+            information and forward it to H. Node H also follows the same
+            procedure as Node C and forwards it to node A. When node A
+            receives the regular DAO, it finds that it already has a
+            routing table entry on behalf of the target address of node D.
+            It finds however that the next hop information for reaching
+            node D has changed i.e. the node D has decided to change the
+            paths. In this case, Node A which is the common ancestor node
+            for node D along the two paths (previous and new), may generate
+            an NPDAO which traverses downwards in the network. The
+            document in the subsequent section will explain the message
+            format changes to handle this downward flow of NPDAO.  </t>
+
+        </section>
+        <section title="DAO message format changes">
+            <t>Every RPL message is divided into base message fields and
+            additional Options. The base fields apply to the message as a whole
+            and options are appended to add message/use-case specific
+            attributes. As an example, a DAO message may be attributed by one
+            or more "RPL Target" options which specifies the reachability
+            information for the given targets. Similarly, a Transit Information
+            option may be associated with a set of RPL Target options.</t>
+
+			<t>The draft proposes a change in DAO message to contain
+			"Invalidate previous route" (I) bit. This I-bit which is carried in
+			regular DAO message, signals the common ancestor node to generate a
+			downstream NPDAO on behalf of the target node. The I-bit is carried
+			in the transit container option which augments the reachability
+			information for a given set of RPL Target(s).</t>
+
+			<t> <figure align="center" anchor="transit_info_with_i"
+			title="Updated Transit Information Option (New I flag added)">
+			<artwork align="center"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Type = 0x06 | Option Length |E|I|  Flags    | Path Control  |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| Path Sequence | Path Lifetime |                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+                               +
+|                                                               |
++                                                               +
+|                                                               |
++                        Parent Address*                        +
+|                                                               |
++                               +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+			
+			]]></artwork> </figure> </t>
+
+			<t>I (Invalidate previous route) bit: 1 bit flag. The 'I' flag is
+			set by the target node to indicate that it wishes to invalidate the
+			previous route by a common ancestor node between the two paths.</t>
+
+			<t>The NPDAO thus generated by the common ancestor node needs to
+			traverse downstream. An additional flag called as "Reverse NPDAO"
+			(R) is added in the base DAO object to signal this change.</t>
+
+			<t> <figure align="center" anchor="dao_obj_with_r"
+			title="Updated DAO base object (New R flag added)">
+			<artwork align="center"><![CDATA[
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+| RPLInstanceID |K|D|R| Flags   |   Reserved    | DAOSequence   |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|                                                               |
++                                                               +
+|                                                               |
++                            DODAGID*                           +
+|                                                               |
++                                                               +
+|                                                               |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|   Option(s)...
++-+-+-+-+-+-+-+-+
+			]]></artwork> </figure> </t>
+
+			<t>R (Reverse DAO) bit: 1 bit flag. The 'R' flag is used to signal
+			that the DAO traverses downwards.</t>
+			<section title="Path Sequence number in the reverse NPDAO">
+				<t>Every DAO message may contain a Path Sequence in the transit
+				information option to identify the freshness of the DAO
+				message. The Path Sequence in the downward NPDAO generated by
+				common ancestor should use the same Path Sequence number
+				present in the regular DAO message.</t>
+			</section>
+        </section>
+        <section title="Example messaging">
+			<t>In <xref target="sample_top"/>, node (D) switches its parent
+			from (B) to (C). The sequence of actions is as follows:
+			<list style="numbers">
+				<t>Node D switches its parent from node B to node C</t>
+
+				<t>D sends a regular DAO(tgt=D,pathseq=x+1,I_flag=1) in the
+				updated path to C</t>
+
+				<t>C checks for routing entry on behalf of D, since it
+				cannot find an entry on behalf of D it creates a new routing
+				entry and forwards the reachability information of the target D
+				to H in a DAO.</t>
+
+				<t>Similar to C, node H checks for routing entry on behalf of
+				D, cannot find an entry and hence creates a new routing entry
+				and forwards the reachability information of the target D to
+				H in a DAO.</t>
+
+				<t>A receives the DAO, and checks for routing entry on behalf
+				of D. It finds a routing entry but checks that the next hop
+				for target D is now changed. Node A checks the I_flag and
+				generates downstream NPDAO(tgt=D,pathseq=x+1,R_flag=1) to
+				previous next hop for target D which is G. Subsequently,
+				A updates the routing entry and forwards the reachability
+				information of target D upstream
+				DAO(tgt=D,pathseq=x+1,I_flag=x) (the I_flag carries no
+				significance henceforth).</t> 
+
+				<t>Node G receives the downstream NPDAO and invalidates routing
+				entry of target D and then checks the reverse (R) flag and
+				forwards the (un)reachability information downstream to B.</t>
+
+				<t>Similarly, B processes the downstream NPDAO by
+				invalidating the routing entry of target D and then checks
+				the reverse (R) flag and forwards the (un)reachability
+				information downstream to D.</t>
+
+				<t>D ignores the downstream NPDAO since the target is
+				itself.</t>
+			</list></t>
+        </section>
+        <section title="Other considerations">
+			<section title="Dependent Nodes invalidation">
+				<t>Current RPL <xref target="RFC6550"/> does not provide a
+				mechanism for route invalidation for dependent nodes.</t>
+
+				<t>This section describes approaches for invalidating routes of
+				dependent nodes if the implementation chooses to solve this
+				problem. The common ancestor node realizes that the paths for
+				dependent nodes have changed (based on next hop change) when it
+				receives a regular DAO on behalf of the dependent nodes. Thus
+				dependent nodes route invalidation can be handled in the same
+				way as the switching node. Note that there is no way that
+				dependent nodes can set the I_flag in the DAO message
+				selectively since they are unaware that their parent/grand
+				parent node is switching paths. There are two ways to handle
+				dependent node route invalidation:</t>
+
+				<t><list style="numbers">
+					<t>One way to resolve is that the common ancestor does not
+					depend upon the I_flag to generate the reverse NPDAO. The
+					only factor it makes the decision will be based on next_hop
+					change for an existing target to generate the NPDAO. Thus
+					when the switching nodes and all the below dependent nodes
+					advertise a regular DAO, the common ancestor node will
+					detect a change in next hop and generate NPDAO for the same
+					target as in the regular DAO.</t>
+
+					<t>Another way is that the nodes always set the I_flag
+					whenever they send regular DAO. Thus common ancestor will
+					first check whether I_flag is set and then check whether
+					the next_hop has changed and subsequently trigger NPDAO if
+					required.</t>
+				</list></t>
+
+				<t>This document recommends the approach in point 2. The
+				advantage with I_flag is that the generation of downstream
+				NPDAO is still controlled by the target node and thus is still
+				in control of its own routing state.</t>
+			</section>
+			<!-- RJ: Consider for future revs. Not sure if this info is needed!
+			<section title="Implementation considerations">
+				<t>Even with the changed semantics, the current NPDAO mechanism can
+				still can be used, if the implementation decides to use it.
+				Moreover a deployment can have a mix of nodes supporting the
+				proposed and the existing NPDAO mechanism. The common ancestor node
+				and other router nodes should support the proposed mechanism for
+				the downstream NPDAO to work.</t>
+			</section>
+			-->
+        </section>
+    </section>
+
+    <section anchor="Acknowledgements" title="Acknowledgements">
+		<t>We would like to thank Cenk Gundogan, Simon Duquennoy and Pascal
+		Thubert for their review and insightful comments.</t>
+    </section>
+
+    <!-- Possibly a 'Contributors' section ... -->
+
+    <section anchor="IANA" title="IANA Considerations">
+		<t>IANA is requested to allocate bit 11 in the DAO base object defined
+		in RPL <xref target="RFC6550"/> section 6.4 for reverse 'R' NPDAO
+		flag.</t>
+
+		<t>IANA is requested to allocate bit 18 in the Transit Information
+		Option defined in RPL <xref target="RFC6550"/> section 6.7.8 for
+		Invalidate route 'I' flag.</t>
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+		<t>This draft does not add any new messages but extends existing
+		messaging. The seucrity considerations applicable to DAO messaging in
+		RPL is also applicable here.</t>
+    </section>
+  </middle>
+
+  <back>
+    <!-- References split into informative and normative -->
+
+    <!-- There are 2 ways to insert reference entries from the citation libraries:
+     1. define an ENTITY at the top, and use "ampersand character"RFC2629; here (as shown)
+     2. simply use a PI "less than character"?rfc include="reference.RFC.2119.xml"?> here
+        (for I-Ds: include="reference.I-D.narten-iana-considerations-rfc2434bis.xml")
+
+     Both are cited textually in the same manner: by using xref elements.
+     If you use the PI option, xml2rfc will, by default, try to find included files in the same
+     directory as the including file. You can also define the XML_LIBRARY environment variable
+     with a value containing a set of directories to search.  These can be either in the local
+     filing system or remote ones accessed by http (http://domain/dir/... ).-->
+
+    <references title="Normative References">
+      <!--?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?-->
+		&RFC6550;
+        &RFC2119;
+		<?rfc include="reference.I-D.ietf-6tisch-architecture.xml"?>
+
+    </references>
+
+    <references title="Informative References">
+		<!-- Here we use entities that we defined at the beginning. -->
+		&RFC3552;
+        <reference anchor="CONTIKI" target="http://www.contiki-os.org">
+            <front>
+                <title>Contiki: The Open Source OS for IoT</title>
+                <author>
+                    <organization>Thingsquare</organization>
+                </author>
+                <date year="2012"/>
+            </front>
+        </reference>
+    </references>
+
+    <section anchor="app-additional" title="Additional Stuff">
+      <t>This becomes an Appendix.</t>
+    </section>
+
+</back>
+</rfc>
