@@ -20,6 +20,7 @@ The implementation is done in a fork of
 Describe the cases when NPDAO is used and DCO is used?
 
 Implementation Statistics (LOC, RAM, ROM)
+Path-Sequence was not handled in Contiki. We had to add it. We do not consider that as part of this new signalling changes.
 
 # Test Tools
 Tools used
