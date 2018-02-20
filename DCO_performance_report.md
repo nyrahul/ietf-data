@@ -26,9 +26,11 @@ The implementation is done in a fork of
 The implementation retains the NPDAO mechanism as it is and builds DCO on top of it. DCO is used only when parent-switching procedure is initiated by the node. In other cases, such as, on route lifetime expiry or other internal error scenarios the node would still use NPDAO messaging to invalidate the route.
 
 ## Implementation Statistics:
-1. Lines of Code: ~50
+1. Lines of Code: ~120 [contiki-changes-for-DCO](https://github.com/contiki-os/contiki/commit/e8ea7790640f96c4a48ca1f8d95e1b7f7ac017f9)
 2. Additional RAM: 0 ... The implementation adds use of Path-Sequence which is defined in base RPL and is currently missing in Contiki. Thus RAM-increase due to Path-Sequence addition is not considered. Addition of Path-Sequence results in 1 extra byte per routing entry.
 3. Flash: XX KB
+
+The implementation has further scope to be optimized by combining APIs needed to construct DAO and DCO since most of the buffer encoding/decoding remains same in both cases.
 
 # Test Tools
 * Simulation Framework: [Whitefield](https://github.com/whitefield-framework/whitefield "Whitefield-Framework") (Internally using [NS3 lr-wpan](https://github.com/nsnam/ns-3-dev-git/tree/master/src/lr-wpan) module in 2.4Ghz mode with single channel unslotted CSMA mode of operation)
@@ -55,7 +57,7 @@ Sample Topology | [TODO](...)
     2. wait for inter-sample-interval
 
 ### Thread change_node_location:
-The aim of this thread is to move the 6LR nodes such that dependent (sub)child nodes start realigning to new parents results in route invalidation procedure been initiated.
+The aim of this thread is to move the 6LR nodes such that dependent (sub)child nodes start realigning to new parents resulting in route invalidation procedure been initiated.
 1. Get connected node cardinality for the 6LR node. Cardinality refers to the number of child nodes connected through this 6LR. Note that we do not use routing table size because it may contain stale entries.
 2. Get the node with highest cardinality.
 3. Change this node's location such that the wireless range is out of reach
@@ -64,9 +66,12 @@ The aim of this thread is to move the 6LR nodes such that dependent (sub)child n
 # Scenario 1: Parent Switch due to metric deterioration
 In case where the parent switch happens due to metric deterioration, the old parent is still reachable albeit with bad metrics. NPDAO which is required to be sent through old parent might still work in this case. We wanted to check following in this context:
 1. How does DCO fares (in terms of stale routes retained on old path) in comparison to NPDAO?
+    * Use of DCO resulted in less number of stale routes consistently. But the percentage difference was not much since NPDAO also would have succeeded in most cases.
 2. Impact on control overhead of using DCO in place of NPDAO
+    * DCO showed consistenly reduced control overhead. This was attributed to the fact the DCO traversed only the subDODAG rooted at the common ancestor.
+3. Impact on packet delivery rate
+    * There was no marked difference in the packet delivery rate.
 
-For cfg_n50_udp30 config, the 
 
 # Scenario 2: Parent Switch because of connectivity loss
 Parent switching can happen because the nodes lose connectivity to its parent node. In such cases, NPDAO won't work at all. DCO will continue to work in such cases and will reduce the impact of stale entries in the network.
