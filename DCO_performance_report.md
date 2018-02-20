@@ -21,9 +21,9 @@ The implementation is done in a fork of
 [Contiki-whitefield](https://github.com/whitefield-framework/contiki/tree/npdao "NPDAO Branch of contiki-whitefield") 
 (done by [Rabi](https://github.com/rabinsahoo)).
 
-The implementation retains the NPDAO mechanism as it is and builds DCO on top of it. DCO is used only when parent-switching procedure is initiated by the node. In other cases, such as, on route lifetime expiry or other internal error scenarios the node would still use NPDAO messaging.
+The implementation retains the NPDAO mechanism as it is and builds DCO on top of it. DCO is used only when parent-switching procedure is initiated by the node. In other cases, such as, on route lifetime expiry or other internal error scenarios the node would still use NPDAO messaging to invalidate the route.
 
-Implementation Statistics (LOC, RAM, ROM)
+## Implementation Statistics:
 1. Lines of Code: ~50
 2. Additional RAM: 0 ... The implementation adds use of Path-Sequence which is defined in base RPL and is currently missing in Contiki. Thus RAM-increase due to Path-Sequence addition is not considered. Addition of Path-Sequence results in 1 extra byte per routing entry.
 3. Flash: XX KB
@@ -45,6 +45,10 @@ Formation | Grid
 Sample Topology | [TODO](...)
 
 # Scenario 1: Parent Switch due to metric deterioration
+In case where the parent switch happens due to metric deterioration, the old parent is still reachable albeit with bad metrics. NPDAO which is required to be sent through old parent might still work in this case. We wanted to check two in this context:
+1. How does DCO fares (in terms of stale routes retained on old path) in comparison to NPDAO?
+2. Impact on control overhead
+
 Regular case refers to the scenario where parent switching happens not due to link unavailability but because the metrics deteoriarate i.e. the links are available such that NPDAO should still work. We wanted to understand the impact of control-traffic due to switching to DCO in such cases.
 
 1. If an implementation switches to DCO in place of NPDAO, what is the impact on RPL-control-traffic?
