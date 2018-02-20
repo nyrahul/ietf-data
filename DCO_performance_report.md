@@ -7,6 +7,8 @@
 
 [Test Configuration](#test-configuration)
 
+[Data Collection Method](#data-collection-method)
+
 [Scenario 1: Parent Switch due to metric deterioration](#scenario-1-parent-switch-due-to-metric-deterioration)
 
 [Scenario 2: Parent Switch because of connectivity loss](#scenario-2-parent-switch-because-of-connectivity-loss)
@@ -44,15 +46,27 @@ UDP Send Time | 30sec
 Formation | Grid
 Sample Topology | [TODO](...)
 
+# Data Collection Method
+1. Start the network
+2. Wait pre-determined time for network to form
+3. [optional] Start a thread to [change_node_location](#thread-change_node_location) dynamically
+4. For n in total_samples (scripts:[get_connectivity_snapshot.sh](https://github.com/nyrahul/whitefield/blob/npdao/scripts/get_connectivity_snapshot.sh)):
+    1. Get connectivity snapshot i.e. unconnected nodes, stale entries, RPL control traffic stats, UDP send/recv stats, elapsed time
+    2. wait for inter-sample-interval
+
+### Thread change_node_location:
+The aim of this thread is to move the 6LR nodes such that dependent (sub)child nodes start realigning to new parents results in route invalidation procedure been initiated.
+1. Get connected node cardinality for the 6LR node. Cardinality refers to the number of child nodes connected through this 6LR. Note that we do not use routing table size because it may contain stale entries.
+2. Get the node with highest cardinality.
+3. Change this node's location such that the wireless range is out of reach
+4. Will result in (sub)child nodes in switching parent nodes causing NPDAO or DCO been initiated.
+
 # Scenario 1: Parent Switch due to metric deterioration
 In case where the parent switch happens due to metric deterioration, the old parent is still reachable albeit with bad metrics. NPDAO which is required to be sent through old parent might still work in this case. We wanted to check following in this context:
 1. How does DCO fares (in terms of stale routes retained on old path) in comparison to NPDAO?
 2. Impact on control overhead of using DCO in place of NPDAO
 
-
-Rationale for reduced control traffic in this scenario:
-
-DCO usually flows between its subDODAG only.
+For cfg_n50_udp30 config, the 
 
 # Scenario 2: Parent Switch because of connectivity loss
 Parent switching can happen because the nodes lose connectivity to its parent node. In such cases, NPDAO won't work at all. DCO will continue to work in such cases and will reduce the impact of stale entries in the network.
