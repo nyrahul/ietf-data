@@ -22,12 +22,8 @@ COL_NPDAO_RCVD=11
 COL_STALE_ENT=5
 
 DATADIR="$1"
-DCO_F=$DATADIR/dco_0.csv
-NPDAO_F=$DATADIR/npdao_0.csv
 
 [[ ! -d $DATADIR ]] && usage
-[[ ! -f $DCO_F ]] && usage
-[[ ! -f $NPDAO_F ]] && usage
 
 TMP_F=tmp_$$.tmp
 
@@ -50,7 +46,7 @@ plot_ctrl_overhead()
     `common_plot_lines`
     set title 'DCO vs NPDAO ctrl overhead' font ',15'
     set ylabel '#msgs'
-    set output '$DATADIR/dco_vs_npdao_ctrl_overhead.png'
+    set output '$DATADIR/dco_vs_npdao_ctrl_overhead_r$1.png'
 
     plot '$NPDAO_F' using $COL_ELAPTIME:$COL_NPDAO_RCVD ls 1 title 'cumulative npdao' with lines, \
          '$DCO_F' using $COL_ELAPTIME:$COL_DCO_RCVD ls 2 title 'cumulative dco' with lines
@@ -65,7 +61,7 @@ plot_stale_stats()
     set title 'DCO vs NPDAO stale entries stats' font ',15'
     set xlabel 'Time(sec)'
     set ylabel 'Stale Routing Entries'
-    set output '$DATADIR/dco_vs_npdao_stale_stats.png'
+    set output '$DATADIR/dco_vs_npdao_stale_stats_r$1.png'
 
     plot '$NPDAO_F' using $COL_ELAPTIME:$COL_STALE_ENT title 'with NPDAO' with lines, \
          '$DCO_F' using $COL_ELAPTIME:$COL_STALE_ENT title 'with DCO' with lines
@@ -73,6 +69,19 @@ plot_stale_stats()
     echo "Plotted stale stats"
 }
 
-plot_ctrl_overhead
-plot_stale_stats
+for((i=0;i<5;i++)); do
+    DCO_F=$DATADIR/dco_$i.csv
+    NPDAO_F=$DATADIR/npdao_$i.csv
+
+    [[ ! -f $DCO_F ]] && continue
+    [[ ! -f $NPDAO_F ]] && continue
+    
+    set1=`wc -l $DCO_F | cut -d ' ' -f 1`
+    set2=`wc -l $NPDAO_F | cut -d ' ' -f 1`
+    
+    [[ $set1 -ne $set2 ]] && echo "Data set sample size differs dco=$set1 npdao=$set2" && continue
+
+    plot_ctrl_overhead $i
+    plot_stale_stats $i
+done
 
