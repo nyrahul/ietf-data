@@ -34,22 +34,29 @@ common_plot_lines()
     set key autotitle columnhead
     set key left
     set xlabel 'Time(sec)'
-    set style line 1 lw 2
-    set style line 2 lw 2
-    set term png
+    set style line 1 lw 2 lc rgb '#aa0000'
+    set style line 2 lw 2 lc rgb '#0000ff'
+    set style line 3 lw 1 lc rgb '#aa0000' dt 2
+    set style line 4 lw 1 lc rgb '#0000ff' dt 2
+    set term pngcairo dashed
     "
 }
 
 plot_ctrl_overhead()
 {
+    tot=`column -s, -t $DCO_F | tr -s ' ' | cut -d ' ' -f $COL_DCO_RCVD | tail -n +2 | paste -sd+  | bc -q`
+    dco_mean=`echo "scale=2; $tot/$sample_sz" | bc -q`
+    tot=`column -s, -t $NPDAO_F | tr -s ' ' | cut -d ' ' -f $COL_NPDAO_RCVD | tail -n +2 | paste -sd+  | bc -q`
+    npdao_mean=`echo "scale=2; $tot/$sample_sz" | bc -q`
+
     echo "
     `common_plot_lines`
     set title 'DCO vs NPDAO ctrl overhead' font ',15'
-    set ylabel '#msgs'
+    set ylabel '#messages'
     set output '$DATADIR/dco_vs_npdao_ctrl_overhead_r$1.png'
 
-    plot '$NPDAO_F' using $COL_ELAPTIME:$COL_NPDAO_RCVD ls 1 title 'cumulative npdao' with lines, \
-         '$DCO_F' using $COL_ELAPTIME:$COL_DCO_RCVD ls 2 title 'cumulative dco' with lines
+    plot '$NPDAO_F' using $COL_ELAPTIME:$COL_NPDAO_RCVD ls 1 title 'cumulative npdao' with lines, $npdao_mean ls 3 notitle, \
+         '$DCO_F' using $COL_ELAPTIME:$COL_DCO_RCVD ls 2 title 'cumulative dco' with lines, $dco_mean ls 4 notitle
     " | gnuplot
     echo "Plotted ctrl overhead"
 }
@@ -68,9 +75,8 @@ plot_stale_stats()
     set ylabel 'Stale Routing Entries'
     set output '$DATADIR/dco_vs_npdao_stale_stats_r$1.png'
 
-    plot '$NPDAO_F' using $COL_ELAPTIME:$COL_STALE_ENT title 'with NPDAO' with lines, \
-         '$DCO_F' using $COL_ELAPTIME:$COL_STALE_ENT title 'with DCO' with lines
-    plot $dco_mean
+    plot '$NPDAO_F' using $COL_ELAPTIME:$COL_STALE_ENT ls 1 title 'with NPDAO' with lines, $npdao_mean ls 3 notitle, \
+         '$DCO_F' using $COL_ELAPTIME:$COL_STALE_ENT ls 2 title 'with DCO' with lines, $dco_mean ls 4 notitle
     " | gnuplot
     echo "Plotted stale stats"
 }
