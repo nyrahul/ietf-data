@@ -30,7 +30,7 @@ The implementation retains the NPDAO mechanism as it is and builds DCO on top of
 ## Implementation Statistics:
 1. Lines of Code: ~120 [contiki-changes-for-DCO](https://github.com/contiki-os/contiki/commit/e8ea7790640f96c4a48ca1f8d95e1b7f7ac017f9)
 2. Additional RAM: 0 ... The implementation adds use of Path-Sequence which is defined in base RPL and is currently missing in Contiki. Thus RAM-increase due to Path-Sequence addition is not considered. Addition of Path-Sequence results in 1 extra byte per routing entry.
-3. Flash: XX KB
+3. Flash: [TODO] KB
 
 The implementation has further scope to be optimized by combining APIs needed to construct DAO and DCO messages since most of the buffer encoding/decoding remains same in both cases.
 
@@ -63,6 +63,7 @@ Topology-Position | [pos_n100.png](data/pos_n100.png)
 Topology-Tree | [tree_n100.png](data/tree_n100.png)
 
 # Data Collection Method
+
 1. Start the network
 2. Wait pre-determined time for network to form
 3. [optional] Start a thread to [change_node_location](#thread-change_node_location) dynamically
@@ -77,9 +78,11 @@ The aim of this thread is to move the 6LR nodes such that dependent (sub)child n
 3. Change this node's location such that the wireless range is out of reach
 4. Will result in (sub)child nodes in switching parent nodes causing NPDAO or DCO been initiated.
 
+Every experiment ran for close to 2 hours. The stale entries, unconnected nodes and other stats were sampled during this time.
+
 # Scenario 1: Parent Switch due to metric deterioration
 In case where the parent switch happens due to metric deterioration, the old parent is still reachable albeit with bad metrics. NPDAO which is required to be sent through old parent might still work in this case. We wanted to check following in this context:
-1. How does DCO fares (in terms of stale routes retained on old path) in comparison to NPDAO?
+1. How does DCO fares in terms of reducing stale routes in comparison to NPDAO?
     * Use of DCO resulted in less number of stale routes consistently. But the percentage difference was not much since NPDAO also would have succeeded in most cases.
 2. Impact on control overhead of using DCO in place of NPDAO
     * DCO showed consistenly reduced control overhead. This was attributed to the fact the DCO traversed only the subDODAG rooted at the common ancestor.
