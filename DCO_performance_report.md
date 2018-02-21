@@ -47,8 +47,8 @@ Config | Value
 #nodes | 50
 UDP Send Time | 30sec
 Formation | Grid
-Topology-Position | [TODO](...)
-Topology-Tree | [TODO](...)
+Topology-Position | [pos_n50.png](data/pos_n50.png)
+Topology-Tree | [tree_n50.png](data/tree_n50.png)
 
 2. cfg_n100_udp30
 
@@ -76,7 +76,6 @@ The aim of this thread is to move the 6LR nodes such that dependent (sub)child n
 4. Will result in (sub)child nodes in switching parent nodes causing NPDAO or DCO been initiated.
 
 # Scenario 1: Parent Switch due to metric deterioration
-
 In case where the parent switch happens due to metric deterioration, the old parent is still reachable albeit with bad metrics. NPDAO which is required to be sent through old parent might still work in this case. We wanted to check following in this context:
 1. How does DCO fares (in terms of stale routes retained on old path) in comparison to NPDAO?
     * Use of DCO resulted in less number of stale routes consistently. But the percentage difference was not much since NPDAO also would have succeeded in most cases.
