@@ -3,21 +3,31 @@
 #num  tot_nodes  lf_nodes  unconn_nodes  stale_entries  tot_par_sw  elap_time  dao_sent  dao_rcvd  npdao_sent  npdao_rcvd  dco_sent  dco_rcvd  udp_sent  udp_rcvd
 #1    100        49        15            77             48          120        294       1674      0           0           40        165       155       152
 
-function finish()
+finish()
 {
     [[ -f "$TMP_F" ]] && rm $TMP_F
     echo "bye"
 }
 trap finish EXIT
 
+usage()
+{
+    echo "Usage: $0 <data_dir> ... data_dir should contain csv files"
+    exit
+}
+
 COL_ELAPTIME=7
 COL_DCO_RCVD=13
 COL_NPDAO_RCVD=11
 COL_STALE_ENT=5
 
-DATADIR="data_n100_udp30"
+DATADIR="$1"
 DCO_F=$DATADIR/dco_0.csv
 NPDAO_F=$DATADIR/npdao_0.csv
+
+[[ ! -d $DATADIR ]] && usage
+[[ ! -f $DCO_F ]] && usage
+[[ ! -f $NPDAO_F ]] && usage
 
 TMP_F=tmp_$$.tmp
 
