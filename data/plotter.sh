@@ -56,6 +56,11 @@ plot_ctrl_overhead()
 
 plot_stale_stats()
 {
+    tot=`column -s, -t $DCO_F | tr -s ' ' | cut -d ' ' -f $COL_STALE_ENT | tail -n +2 | paste -sd+  | bc -q`
+    dco_mean=`echo "scale=2; $tot/$sample_sz" | bc -q`
+    tot=`column -s, -t $NPDAO_F | tr -s ' ' | cut -d ' ' -f $COL_STALE_ENT | tail -n +2 | paste -sd+  | bc -q`
+    npdao_mean=`echo "scale=2; $tot/$sample_sz" | bc -q`
+
     echo "
     `common_plot_lines`
     set title 'DCO vs NPDAO stale entries stats' font ',15'
@@ -65,6 +70,7 @@ plot_stale_stats()
 
     plot '$NPDAO_F' using $COL_ELAPTIME:$COL_STALE_ENT title 'with NPDAO' with lines, \
          '$DCO_F' using $COL_ELAPTIME:$COL_STALE_ENT title 'with DCO' with lines
+    plot $dco_mean
     " | gnuplot
     echo "Plotted stale stats"
 }
@@ -80,6 +86,7 @@ for((i=0;i<5;i++)); do
     set2=`wc -l $NPDAO_F | cut -d ' ' -f 1`
     
     [[ $set1 -ne $set2 ]] && echo "Data set sample size differs dco=$set1 npdao=$set2" && continue
+    sample_sz=$set1
 
     plot_ctrl_overhead $i
     plot_stale_stats $i
