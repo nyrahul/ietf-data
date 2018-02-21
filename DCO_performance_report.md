@@ -64,6 +64,7 @@ Topology-Tree | [tree_n100.png](data/tree_n100.png)
 
 # Data Collection Method
 
+### [Script](https://github.com/nyrahul/whitefield/blob/npdao/tools/npdao/get_data.sh) to get the data
 1. Start the network
 2. Wait pre-determined time for network to form
 3. [optional] Start a thread to [change_node_location](#thread-change_node_location) dynamically
@@ -78,7 +79,10 @@ The aim of this thread is to move the 6LR nodes such that dependent (sub)child n
 3. Change this node's location such that the wireless range is out of reach
 4. Will result in (sub)child nodes in switching parent nodes causing NPDAO or DCO been initiated.
 
-Every experiment ran for close to 2 hours. The stale entries, unconnected nodes and other stats were sampled during this time.
+### Getting stale entries stats
+Stale entries refers to routing entries that the target node no longer uses for downstream traffic. Stale entries are left behind because of sub-optimal route invalidation. Getting these stats are non-trivial since it is difficult to understand which of the routing entries are no longer needed. Whitefield allows to query default route and routing entries for each of the node. It is possible to check based on current default route which is the upstream path which has been selected by the node and mark those routing entries. Since RPL currently establishes bidirectional path i.e. the upstream and downstream paths are essentially same, it is possible to verify which are active routing entries and which are stale.
+
+Every experiment executed for close to 30 minutes taking 5 readings of each. The stale entries, unconnected nodes and other stats were sampled during this time.
 
 # Scenario 1: Parent Switch due to metric deterioration
 In case where the parent switch happens due to metric deterioration, the old parent is still reachable albeit with bad metrics. NPDAO which is required to be sent through old parent might still work in this case. We wanted to check following in this context:
@@ -89,12 +93,27 @@ In case where the parent switch happens due to metric deterioration, the old par
 3. Impact on packet delivery rate
     * There was no marked statistical difference in the packet delivery rate. The PDR was close to 99% in both cases.
 
-[TODO] Show stale entries stats in case of DCO vs NPDAO
-
-[TODO] Show control traffic stats for NPDAO vs DCO
+cfg_n100_udp30||
+:-----------------:|:--------------------:
+![](data/data_n100_udp30/dco_vs_npdao_ctrl_overhead_r0.png)|![](data/data_n100_udp30/dco_vs_npdao_stale_stats_r0.png)
+![](data/data_n100_udp30/dco_vs_npdao_ctrl_overhead_r1.png)|![](data/data_n100_udp30/dco_vs_npdao_stale_stats_r1.png)
+![](data/data_n100_udp30/dco_vs_npdao_ctrl_overhead_r2.png)|![](data/data_n100_udp30/dco_vs_npdao_stale_stats_r2.png)
 
 # Scenario 2: Parent Switch because of connectivity loss
 Parent switching can happen because of nodes losing connectivity to its parent node. In such cases, NPDAO would be highly sub-optimal because of its dependence on previous path for sending NPDAO. DCO however will continue to work in such cases and should reduce the impact of stale entries in the network.
+
+In this experiment we used the [above](#data-collection-method) mentioned technique/script to change the 6LR node positions dynamically so as to cause connectivity loss.
+
+cfg_n50_udp30||
+:-----------------:|:--------------------:
+![](data/databrklnk_n50_udp30/dco_vs_npdao_ctrl_overhead_r0.png)|![](data/databrklnk_n50_udp30/dco_vs_npdao_stale_stats_r0.png)
+![](data/databrklnk_n50_udp30/dco_vs_npdao_ctrl_overhead_r1.png)|![](data/databrklnk_n50_udp30/dco_vs_npdao_stale_stats_r1.png)
+![](data/databrklnk_n50_udp30/dco_vs_npdao_ctrl_overhead_r2.png)|![](data/databrklnk_n50_udp30/dco_vs_npdao_stale_stats_r2.png)
+cfg_n100_udp30||
+![](data/databrklnk_n100_udp30/dco_vs_npdao_ctrl_overhead_r0.png)|![](data/databrklnk_n100_udp30/dco_vs_npdao_stale_stats_r0.png)
+![](data/databrklnk_n100_udp30/dco_vs_npdao_ctrl_overhead_r3.png)|![](data/databrklnk_n100_udp30/dco_vs_npdao_stale_stats_r3.png)
+![](data/databrklnk_n100_udp30/dco_vs_npdao_ctrl_overhead_r4.png)|![](data/databrklnk_n100_udp30/dco_vs_npdao_stale_stats_r4.png)
+
 
 # Challenges faced
 * In bigger networks, there is higher probability that DAO will fail on its way for certain nodes. We found that 3 to 4% of nodes usually take much longer to join the network. For e.g. in a 100 node network (cfg_n100_udp30) almost 95-96 nodes join the network i.e. the BR has a routing entry in less than couple of minutes. But subsequently it takes a longer time, almost 10 minutes in certain cases for the rest of nodes to join.
