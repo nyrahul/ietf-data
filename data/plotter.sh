@@ -62,7 +62,7 @@ plot_stale_stats()
 {
     echo "
     `common_plot_lines`
-    set title 'DCO vs NPDAO stale entries stats'
+    set title 'DCO vs NPDAO stale entries stats' font ',15'
     set xlabel 'Time(sec)'
     set ylabel 'Stale Routing Entries'
     set output '$DATADIR/dco_vs_npdao_stale_stats.png'
