@@ -136,7 +136,7 @@ cfg_n100_udp30||
 * Because we were changing the 6LR nodes position dynamically, there was a mich bigger impact on the use of DCO and NPDAO. DCO scored much higher points in this context.
 
 # Conclusion
-DCO not only reduces the overall stale entries in the network but also reduces the route invalidation traffic substantially.
+DCO not only reduces the overall stale entries in the network but also helps in reducing the route invalidation traffic.
 
 # Challenges faced
 * In bigger networks, there is higher probability that DAO will fail on its way for certain nodes. We found that 3 to 4% of nodes usually take much longer to join the network. For e.g. in a 100 node network (cfg_n100_udp30) almost 95-96 nodes join the network i.e. the BR has a routing entry in less than couple of minutes. But subsequently it takes a longer time, almost 10 minutes in certain cases for the rest of nodes to join.
