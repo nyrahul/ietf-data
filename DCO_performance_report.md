@@ -13,6 +13,8 @@
 
 [Scenario 2: Parent Switch because of connectivity loss](#scenario-2-parent-switch-because-of-connectivity-loss)
 
+[Conclusion](#conclusion)
+
 [Challenges faced](#challenges-faced)
 
 # Introduction
@@ -134,6 +136,7 @@ cfg_n100_udp30||
 
 ### Comments
 * Because we were changing the 6LR nodes position dynamically, there was a mich bigger impact on the use of DCO and NPDAO. DCO scored much higher points in this context.
+* Please note that the y-axis scales differ for different configuration (for e.g. between cfg_n50_udp30 to cfg_n100_udp30).
 
 # Conclusion
 DCO not only reduces the overall stale entries in the network but also helps in reducing the route invalidation traffic.
