@@ -29,8 +29,8 @@ The implementation retains the NPDAO mechanism as it is and builds DCO on top of
 
 ## Implementation Statistics:
 1. Lines of Code: ~120 [contiki-changes-for-DCO](https://github.com/contiki-os/contiki/commit/e8ea7790640f96c4a48ca1f8d95e1b7f7ac017f9)
-2. Additional RAM: 0 ... The implementation adds use of Path-Sequence which is defined in base RPL and is currently missing in Contiki. Thus RAM-increase due to Path-Sequence addition is not considered. Addition of Path-Sequence results in 1 extra byte per routing entry.
-3. Flash: 2.6KB
+2. Additional RAM: 0 ... The implementation adds use of Path-Sequence which is defined in base RPL and is currently missing in Contiki. Thus RAM-increase due to Path-Sequence addition is not considered. Anyways, addition of Path-Sequence results in 1 extra byte per routing entry.
+3. Flash: 2.5KB
 
 mode|text|data|bss|
 ----|----|----|---|
@@ -44,6 +44,11 @@ The implementation has further scope to be optimized by combining APIs needed to
 # Test Tools
 * Simulation Framework: [Whitefield](https://github.com/whitefield-framework/whitefield "Whitefield-Framework") (Internally using [NS3 lr-wpan](https://github.com/nsnam/ns-3-dev-git/tree/master/src/lr-wpan) module in 2.4Ghz mode with single channel unslotted CSMA mode of operation)
 * [Contiki(forked)](https://github.com/whitefield-framework/contiki/tree/npdao) as the network stack
+
+All the data produced here is reproducible using Whitefield framework. All the scripts used for automation are part of the 'npdao' branch of the framework.
+
+### Comments
+* We didn't use Cooja for experimentation because the wireless model provided by Cooja is naive (i.e. the purpose of Cooja is to do emulation of platforms and provides a wireless mechanism that just works). For experiments such as these, using a realistic RF was rather important.
 
 # Test Configuration
 * Tests were done on a laptop [HP 820 G2](https://support.hp.com/in-en/document/c04543486)
@@ -106,10 +111,16 @@ cfg_n100_udp30||
 ![](data/data_n100_udp30/dco_vs_npdao_ctrl_overhead_r1.png)|![](data/data_n100_udp30/dco_vs_npdao_stale_stats_r1.png)
 ![](data/data_n100_udp30/dco_vs_npdao_ctrl_overhead_r2.png)|![](data/data_n100_udp30/dco_vs_npdao_stale_stats_r2.png)
 
+### Comments
+* We were expecting improvements only in terms of reduction of stale entries but DCO seems to also impact the control overhead. This was a surprise especially because even in regular cases, sometimes the reduction was several order of magnitudes as compared to use of NPDAO. Please note that here we compare only the NPDAO and DCO traffic. NPDAO and DCO traffic is much less when compared to other RPL control messages such as DAO and DIOs.
+* When DCO is used, you can see steep gradient for stale entries reduction unlike for NPDAO where stale entries linger for a longer time.
+* We have not quoted packet delivery rate in the graphs because there is negligible impact on it. New route creation is handled by DAO messages which has no change thus the impact is negligible. The small positive improvement in context to DCO data with regards to PDR could be due to reduction route invalidation traffic. Interested folks may refer to the [raw data](data/) which clearly show UDP send/recv statistics in context to use of DCO and NPDAO.
+* One must also check if the number of parent switches when DCO and NPDAO is used remains fairly similar. The parent switches which peaks initially after the first routes are formed and then subsides in both the cases. We found roughly equal number of parent switches both in DCO as well as in NPDAO case. Interested folks may refer to the [raw data](data/) which clearly shows parent switch stats in context to use of DCO and NPDAO.
+
 # Scenario 2: Parent Switch because of connectivity loss
 Parent switching can happen because of nodes losing connectivity to its parent node. In such cases, NPDAO would be highly sub-optimal because of its dependence on previous path for sending NPDAO. DCO however will continue to work in such cases and should reduce the impact of stale entries in the network.
 
-In this experiment we used the [above](#data-collection-method) mentioned technique/script to change the 6LR node positions dynamically so as to cause connectivity loss.
+In this experiment we used the [above](#data-collection-method) mentioned technique/script to change the 6LR node positions dynamically so as to cause connectivity loss for corresponding child nodes.
 
 cfg_n50_udp30||
 :-----------------:|:--------------------:
@@ -121,7 +132,13 @@ cfg_n100_udp30||
 ![](data/databrklnk_n100_udp30/dco_vs_npdao_ctrl_overhead_r3.png)|![](data/databrklnk_n100_udp30/dco_vs_npdao_stale_stats_r3.png)
 ![](data/databrklnk_n100_udp30/dco_vs_npdao_ctrl_overhead_r4.png)|![](data/databrklnk_n100_udp30/dco_vs_npdao_stale_stats_r4.png)
 
+### Comments
+* Because we were changing the 6LR nodes position dynamically, there was a mich bigger impact on the use of DCO and NPDAO. DCO scored much higher points in this context.
+
+# Conclusion
+DCO not only reduces the overall stale entries in the network but also reduces the route invalidation traffic substantially.
 
 # Challenges faced
 * In bigger networks, there is higher probability that DAO will fail on its way for certain nodes. We found that 3 to 4% of nodes usually take much longer to join the network. For e.g. in a 100 node network (cfg_n100_udp30) almost 95-96 nodes join the network i.e. the BR has a routing entry in less than couple of minutes. But subsequently it takes a longer time, almost 10 minutes in certain cases for the rest of nodes to join.
+* Whitefield works using realistic RF simulation provided by NS3. Thus it was difficult to ascertain a particular topology i.e. a 6LR nodes in one experiment may have 3 child nodes and in other case may have 5 nodes. We ended up using a logic that we sort the 6LRs based on the child count and then use it to change the 6LRs node position so as to result in connectivity loss. We then took several rounds (5 rounds) of data. Thus the difference in some cases was much larger than others but in all cases we found that DCO outperforms NPDAO.
 
