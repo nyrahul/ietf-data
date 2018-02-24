@@ -32,12 +32,20 @@ The implementation retains the NPDAO mechanism as it is and builds DCO on top of
 ## Implementation Statistics:
 1. Lines of Code: ~120 [contiki-changes-for-DCO](https://github.com/contiki-os/contiki/commit/e8ea7790640f96c4a48ca1f8d95e1b7f7ac017f9)
 2. Additional RAM: 0 ... The implementation adds use of Path-Sequence which is defined in base RPL and is currently missing in Contiki. Thus RAM-increase due to Path-Sequence addition is not considered. Anyways, addition of Path-Sequence results in 1 extra byte per routing entry.
-3. Flash: 2.5KB
+3. Flash: 800B on CC2538, 2KB on x86_64
+    * cc2538
 
 mode|text|data|bss|
 ----|----|----|---|
-Without DCO|149596|1948|27296|
-With DCO|152280|1948|27296|
+Without DCO|58477|2671|21551|
+With DCO|59317|2671|21551|
+
+    * x86_64
+    
+mode|text|data|bss|
+----|----|----|---|
+Without DCO|137008|1916|26796|
+With DCO|139020|1916|26796|
 
 * Contiki examples/ipv6/rpl-udp/ example compiled in native mode with and without DCO.
 
