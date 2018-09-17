@@ -17,7 +17,7 @@ We use 802.15.4 in single channel mode of operation for metering use-case. The s
 1. Number of nodes: 50
 2. Topology: Grid (10x5) [Sample1](https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r1.png), [Sample2](https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r2.png), [Sample3](https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r3.png)
 3. Inter-Node distance: x=TODOm, y=TODOm
-4. Wireless Configuration: 802.15.4 in 2.4GHz range with single channel (channel 26) mode of operation
+4. Wireless Configuration: 802.15.4 in 2.4GHz range with single channel (channel 26) unslotted CSMA mode of operation
 5. Max retry at mac layer: 3 (with exp backoff)
 6. Mac MTU = 127B
 
@@ -72,7 +72,13 @@ Note:
 | With Frag Fwding   | 2 | 52% | 21479 | 2880 | 1366 | 901 | 61/4898/393 | 60 |
 | With Frag Fwding   | 3 | 52% | 21868 | 2969 | 1314 | 973 | 63/10987/421 | 87 |
 
+## Observations
+
+1. Fragment forwarding seems to have a negative impact on the overall performance. 
+2. The PDR is heavily impacted and the average latency is also reported to be higher in general.
+3. In general the number of mac attempts/failure seems to have drastically increased in case of fragment forwarding. This is possible because with fragment forwarding it is possible that multiple nodes might be in a state of transmission at the same time resulting in higher collisions.
+
 ## Links
 1. [Raw Data](https://github.com/rabinsahoo/pcap_topo)
-2. Whitefield Framework
-3. Contiki Implementation with Fragment Forwarding
+2. [Whitefield Framework](https://github.com/whitefield-framework/whitefield)
+3. [Contiki Implementation with Fragment Forwarding](https://github.com/rabinsahoo/6lowpan_fragment_forwarding)
