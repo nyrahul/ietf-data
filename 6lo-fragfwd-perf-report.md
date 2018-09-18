@@ -1,13 +1,18 @@
 # 6Lo Fragment Forwarding Performance Report
 
-## Related Drafts:
+This document reports the performance of fragment forwarding vis-a-vis existing per-hop reassembly in 802.15.4 networks.
 
-[Virtual reassembly buffers in 6LoWPAN](https://datatracker.ietf.org/doc/draft-ietf-lwig-6lowpan-virtual-reassembly/)
+## Related Drafts
 
-[LLN Minimal Fragment Forwarding](https://datatracker.ietf.org/doc/draft-watteyne-6lo-minimal-fragment/)
+### Fragment Forwarding drafts
+1. [Virtual reassembly buffers in 6LoWPAN](https://datatracker.ietf.org/doc/draft-ietf-lwig-6lowpan-virtual-reassembly/)
+2. [LLN Minimal Fragment Forwarding](https://datatracker.ietf.org/doc/draft-watteyne-6lo-minimal-fragment/)
+
+### Per-hop reassembly
+[RFC 4944](https://tools.ietf.org/html/rfc4944) Transmission of IPv6 Packets over IEEE 802.15.4 Networks
 
 ## Our use-case/motivation for fragment forwarding experimentation
-We use 802.15.4 in single channel mode of operation for metering use-case. The security is based on EAP-PANA and the headers are too bulky resulting in packet fragmentation during authentication phase. Our aim was to check the impact of fragment forwarding on the authentication process which could possibly impact network convergence.
+We use 802.15.4 in single channel mode of operation for metering use-case. The security solution is based on EAP-PANA for network authentication and the headers in EAP-PANA are too bulky (for 802.15.4) resulting in packet fragmentation during authentication phase. Our aim was to check the impact of fragment forwarding on the authentication process which could possibly impact/reduce network convergence/time.
 
 ## Test Tools/Code
 1. [Whitefield Framework](https://github.com/whitefield-framework/whitefield) (with NS3 as AirLine and Contiki as Stackline) on Ubuntu 18.04 x86_64.
@@ -16,7 +21,7 @@ We use 802.15.4 in single channel mode of operation for metering use-case. The s
 ## Test Topology
 1. Number of nodes: 50
 2. Topology: Grid (10x5) [Sample1](https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r1.png), [Sample2](https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r2.png), [Sample3](https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r3.png)
-3. Inter-Node distance: x=TODOm, y=TODOm
+3. Inter-Node distance in the grid: x=80m, y=100m
 4. Wireless Configuration: 802.15.4 in 2.4GHz range with single channel (channel 26) unslotted CSMA mode of operation
 5. Max retry at mac layer: 3 (with exp backoff)
 6. Mac MTU = 127B
@@ -65,7 +70,7 @@ Note:
 ### Experiment3: Send Rate=160s, UDP Payload size=1024B
 | Scenario | sr# | PDR | Attempt1 | Attempt2 | Attempt3 | Failure | Latency(ms) min/max/avg | # PrntSw |
 |----------|-----|-----|----------|----------|----------|---------|-------------------------|----------|
-| Per hop reassembly | 1 | 92% | XXXXX | XXX | XX | XX | XXX | XX |
+| Per hop reassembly | 1 | 92% | 30372 | 398 | 50 | 32 | 70/12533/385 | 22 |
 | Per hop reassembly | 2 | 95% | 30417 | 374 | 42 | 63 | 60/2173/410 | 20 |
 | Per hop reassembly | 3 | 96% | 30536 | 416 | 50 | 52 | 62/1156/367 | 19 |
 | With Frag Fwding   | 1 | 55% | 20737 | 2673 | 1230 | 818 | 64/4270/412 | 62 |
@@ -74,11 +79,21 @@ Note:
 
 ## Observations
 
-1. Fragment forwarding seems to have a negative impact on the overall performance. 
+1. Fragment forwarding seems to have a negative impact on the overall performance.
 2. The PDR is heavily impacted and the average latency is also reported to be higher in general.
-3. In general the number of mac attempts/failure seems to have drastically increased in case of fragment forwarding. This is possible because with fragment forwarding it is possible that multiple nodes might be in a state of transmission at the same time resulting in higher collisions.
+3. In general with fragment forwarding, there are more failures reported at MAC layer.
+4. The latency differences between two modes are statistically insignificant.
+5. In general with fragment forwarding, there are more number of parent switches. This can be attributed to transmission failures.
+
+## Inferrence
+1. In general the number of mac attempts/failure seems to have drastically increased in case of fragment forwarding. This is possibly because with fragment forwarding it is possible that multiple nodes might be in a state of transmission at the same time resulting in higher collisions.
+2. While fragment forwarding seems to be an interesting feature, the usability might be a problem especially with shared channels or shared cells in case of 6TiSCH. In case of dedicated cells, the performance of fragment forwarding "might" be better than per hop reassembly, but this currently is pure speculation and we do not have any data for 6TiSCH env.
+
+## Word about data reported by [Yatch](https://github.com/yatch) during IETF 101
+Yatch's experiment ([slide 16](https://datatracker.ietf.org/meeting/101/materials/slides-101-6lo-fragmentation-design-team-formation-update-00.pdf)) was done in 6TiSCH simulator without realistic wireless models. That experiment primarily checked the impact of buffer unavailability on a bottleneck parent/grand-parent node. Yatch's data proved that fragment forwarding works much better when there is a bottleneck parent node which cannot hold enough reassembly buffers and has to drop previous uncompleted partially-reassembled payloads to make way for new one. Essentially the analysis was more towards memory implications where fragment forwarding proved much better.
 
 ## Links
 1. [Raw Data](https://github.com/rabinsahoo/pcap_topo)
 2. [Whitefield Framework](https://github.com/whitefield-framework/whitefield)
 3. [Contiki Implementation with Fragment Forwarding](https://github.com/rabinsahoo/6lowpan_fragment_forwarding)
+4. Yatch's experiment ([slide 16](https://datatracker.ietf.org/meeting/101/materials/slides-101-6lo-fragmentation-design-team-formation-update-00.pdf))
