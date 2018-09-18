@@ -93,7 +93,7 @@ Note:
 Yatch's experiment ([slide 16](https://datatracker.ietf.org/meeting/101/materials/slides-101-6lo-fragmentation-design-team-formation-update-00.pdf)) was done in 6TiSCH simulator without realistic wireless models. That experiment primarily checked the impact of buffer unavailability on a bottleneck parent/grand-parent node. Yatch's data proved that fragment forwarding works much better when there is a bottleneck parent node which cannot hold enough reassembly buffers and has to drop previous uncompleted partially-reassembled payloads to make way for new one. Essentially the analysis was more towards memory implications where fragment forwarding proved much better.
 
 ## Links
-1. [Raw Data](https://github.com/rabinsahoo/pcap_topo)
+1. [Raw Data](https://github.com/rabinsahoo/pcap_topo) for the experiments conducted (contains pcap, topology, config)
 2. [Whitefield Framework](https://github.com/whitefield-framework/whitefield)
 3. [Contiki Implementation with Fragment Forwarding](https://github.com/rabinsahoo/6lowpan_fragment_forwarding)
 4. Yatch's experiment ([slide 16](https://datatracker.ietf.org/meeting/101/materials/slides-101-6lo-fragmentation-design-team-formation-update-00.pdf))
