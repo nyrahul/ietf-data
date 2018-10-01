@@ -141,6 +141,24 @@ Experiment3: Send Rate=160s, UDP Payload size=1024B
 |                    | 3 | 82% | 29958    | 1802     | 432      | 202     | 453/775/543             | 31       |
 +--------------------+---+-----+----------+----------+----------+---------+-------------------------+----------+
 
+Graphs
+------
+
+|pdr|latency|macfail|
+
+.. |pdr| image:: data/6lo_ff/pdr.png
+.. |latency| image:: data/6lo_ff/latency.png
+.. |macfail| image:: data/6lo_ff/macfail.png
+
+Packet Delivery Rate Comparision
+````````````````````````````````
+`PDR </data/6lo_ff/pdr.png>`_
+
+Latency Comparision
+```````````````````
+`PDR </data/6lo_ff/pdr.png>`_
+
+
 Observations
 ------------
 
@@ -149,6 +167,7 @@ Observations
 3) In general with fragment forwarding, there are more failures reported at MAC layer.
 4) The latency differences between two modes are statistically insignificant.
 5) In general with fragment forwarding, there are more number of parent switches. This can be attributed to transmission failures.
+6) If pacing is introduced, then it improves the fragment forwarding PDR drastically. But it also induces latency.
 
 Inferrence
 ----------
