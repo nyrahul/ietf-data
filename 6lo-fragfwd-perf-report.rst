@@ -147,11 +147,11 @@ Graphs
 |pdr|latency|macfail|
 
 .. image:: data/6lo_ff/pdr.png
-    :width: 33 %
+    :scale: 33 %
 .. image:: data/6lo_ff/latency.png
-    :width: 33 %
+    :scale: 33 %
 .. image:: data/6lo_ff/macfail.png
-    :width: 33 %
+    :scale: 33 %
 
 Packet Delivery Rate Comparision
 ````````````````````````````````
