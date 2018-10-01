@@ -50,6 +50,15 @@ The size of the payload is varied between 256, 512, and 1024 bytes. All the
 nodes transmit the data with the destination as the border router when the
 payload is finally accounted for.
 
+Pacing implementation
+`````````````````````
+During ML discussions it turned out that fragment forwarding data might be much
+worse unless some sort of pacing mechanism is implemented. Pacing will ensure
+that subsequent transmissions on the peer nodes do not overlap. Please note
+that pacing is implemented purely on the original sender side i.e. a fixed
+amount of delay (for e.g. 50ms) is introduced before every fragment is
+transmitted.
+
 Test observations/steps
 -----------------------
 1. Check the overall Packet Delivery Rate i.e. how many complete payloads finally reach the BR?
