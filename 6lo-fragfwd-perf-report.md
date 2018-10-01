@@ -70,7 +70,7 @@ Note:
 ### Experiment1: Send Rate=40s, UDP Payload size=256B
 | Scenario | sr# | PDR | Attempt1 | Attempt2 | Attempt3 | Failure | Latency(ms) min/max/avg | # PrntSw |
 |----------|-----|-----|----------|----------|----------|---------|-------------------------|----------|
-| <td rowspan=3>Per hop reassembly</td> | 1 | 98% | 25398 | 393 | 46 | 42 | 20/424/120 | 27 |
+<td rowspan=3>Per hop reassembly</td>| | 1 | 98% | 25398 | 393 | 46 | 42 | 20/424/120 | 27 |
 | | 2 | 98% | 25757 | 380 | 51 | 36 | 19/412/122 | 30 |
 | | 3 | 99% | 29492 | 414 | 58 | 34 | 18/423/122 | 30 |
 | With Frag Fwding   | 1 | 89% | 23106 | 2322 | 1047 | 297 | 16/370/118 | 32 |
