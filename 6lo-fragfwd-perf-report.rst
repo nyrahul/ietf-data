@@ -8,12 +8,12 @@ Related Drafts
 --------------
 
 Fragment Forwarding drafts
---------------------------
+``````````````````````````
 1) `Virtual reassembly buffers in 6LoWPAN`_
 2) `LLN Minimal Fragment Forwarding`_
 
 Per-hop reassembly
-------------------
+``````````````````
 RFC4944_ Transmission of IPv6 Packets over IEEE 802.15.4 Networks
 
 Our use-case/motivation for fragment forwarding experimentation
