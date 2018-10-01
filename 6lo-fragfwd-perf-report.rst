@@ -144,14 +144,19 @@ Experiment3: Send Rate=160s, UDP Payload size=1024B
 Graphs
 ------
 
-|pdr|latency|macfail|
-
-.. image:: data/6lo_ff/pdr.png
-    :scale: 33 %
-.. image:: data/6lo_ff/latency.png
-    :scale: 33 %
-.. image:: data/6lo_ff/macfail.png
-    :scale: 33 %
++---------------------------------------+
+| Packet Delivery Rate Comparision      |
++---------------------------------------+
+| .. image:: data/6lo_ff/pdr.png        |
++---------------------------------------+
+| Latency Comparision                   |
++---------------------------------------+
+| .. image:: data/6lo_ff/latency.png    |
++---------------------------------------+
+| MAC transmit failure Comparision      |
++---------------------------------------+
+| .. image:: data/6lo_ff/macfail.png    |
++---------------------------------------+
 
 Packet Delivery Rate Comparision
 ````````````````````````````````
