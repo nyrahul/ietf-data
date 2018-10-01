@@ -1,5 +1,5 @@
 set xtics ("40s256B" 1,"80s512B" 2,"160s1024B" 3)
-set term png
+set term pngcairo
 set title "MAC transmit failure comparision"
 set output "macfail.png"
 set xlabel  "scenario"
