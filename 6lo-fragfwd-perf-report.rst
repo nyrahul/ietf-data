@@ -199,6 +199,12 @@ Links
 3. Contiki with `Fragment Forwarding implementation`_
 4. `Yatch experiment`_
 
+Credits
+-------
+Thanks to Yatsuyuki Tanaka for sharing his insights into his experiments.
+Thanks to Carsten Bormann and Pascal Thubert for great discussion on design team ML.
+Thanks to Rabi Sahoo for the implementation and working all along.
+
 .. _Virtual reassembly buffers in 6LoWPAN: https://datatracker.ietf.org/doc/draft-ietf-lwig-6lowpan-virtual-reassembly/
 .. _LLN Minimal Fragment Forwarding: https://datatracker.ietf.org/doc/draft-watteyne-6lo-minimal-fragment/
 .. _RFC4944: https://tools.ietf.org/html/rfc4944
