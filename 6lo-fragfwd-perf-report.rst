@@ -171,15 +171,8 @@ Observations
 Inferrence
 ----------
 
-1. In general the number of mac attempts/failure seems to have drastically
-increased in case of fragment forwarding. This is possibly because with
-fragment forwarding it is possible that multiple nodes might be in a state of
-transmission at the same time resulting in higher collisions.
-2. While fragment forwarding seems to be an interesting feature, the usability
-might be a problem especially with shared channels or shared cells in case of
-6TiSCH. In case of dedicated cells, the performance of fragment forwarding
-"might" be better than per hop reassembly, but this currently is pure
-speculation and we do not have any data for 6TiSCH env.
+1. In general the number of mac attempts/failure seems to have drastically increased in case of fragment forwarding. This is possibly because with fragment forwarding it is possible that multiple nodes might be in a state of transmission at the same time resulting in higher collisions.
+2. While fragment forwarding seems to be an interesting feature, the usability might be a problem especially with shared channels or shared cells in case of 6TiSCH. In case of dedicated cells, the performance of fragment forwarding "might" be better than per hop reassembly, but this currently is pure speculation and we do not have any data for 6TiSCH env.
 
 Word about data reported by Yatch_ during IETF 101
 -----------------------------------------------------------------------------
