@@ -158,15 +158,6 @@ Graphs
 | .. image:: data/6lo_ff/macfail.png    |
 +---------------------------------------+
 
-Packet Delivery Rate Comparision
-````````````````````````````````
-`PDR </data/6lo_ff/pdr.png>`_
-
-Latency Comparision
-```````````````````
-`PDR </data/6lo_ff/pdr.png>`_
-
-
 Observations
 ------------
 
