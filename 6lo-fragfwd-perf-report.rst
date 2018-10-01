@@ -9,15 +9,12 @@ Related Drafts
 
 Fragment Forwarding drafts
 --------------------------
-1. [Virtual reassembly buffers in
-6LoWPAN](https://datatracker.ietf.org/doc/draft-ietf-lwig-6lowpan-virtual-reassembly/)
-2. [LLN Minimal Fragment
-Forwarding](https://datatracker.ietf.org/doc/draft-watteyne-6lo-minimal-fragment/)
+1) `Virtual reassembly buffers in 6LoWPAN`_
+2) `LLN Minimal Fragment Forwarding`_
 
 Per-hop reassembly
 ------------------
-[RFC 4944](https://tools.ietf.org/html/rfc4944) Transmission of IPv6 Packets
-over IEEE 802.15.4 Networks
+RFC4944_ Transmission of IPv6 Packets over IEEE 802.15.4 Networks
 
 Our use-case/motivation for fragment forwarding experimentation
 ---------------------------------------------------------------
@@ -30,19 +27,13 @@ impact/reduce network convergence/time.
 
 Test Tools/Code
 ---------------
-1. [Whitefield Framework](https://github.com/whitefield-framework/whitefield)
-(with NS3 as AirLine and Contiki as Stackline) on Ubuntu 18.04 x86_64.
-2. Fragment Forwarding
-[implementation](https://github.com/rabinsahoo/6lowpan_fragment_forwarding) in
-Contiki by [Rabi Sahoo](https://github.com/rabinsahoo)
+1. Whitefield_ Framework (with NS3 as AirLine and Contiki as Stackline) on Ubuntu 18.04 x86_64.
+2. `Fragment Forwarding implementation`_ in Contiki by `Rabi Sahoo`_
 
 Test Topology
 -------------
 1. Number of nodes: 50
-2. Topology: Grid (10x5)
-[Sample1](https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r1.png),
-[Sample2](https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r2.png),
-[Sample3](https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r3.png)
+2. Topology: Grid (10x5) [Sample1_], [Sample2_], [Sample3_]
 3. Inter-Node distance in the grid: x=80m, y=100m
 4. Wireless Configuration: 802.15.4 in 2.4GHz range with single channel (channel 26) unslotted CSMA mode of operation
 5. Max retry at mac layer: 3 (with exp backoff)
@@ -150,3 +141,13 @@ Links
 2. [Whitefield Framework](https://github.com/whitefield-framework/whitefield)
 3. [Contiki Implementation with Fragment Forwarding](https://github.com/rabinsahoo/6lowpan_fragment_forwarding)
 4. Yatch's experiment ([slide 16](https://datatracker.ietf.org/meeting/101/materials/slides-101-6lo-fragmentation-design-team-formation-update-00.pdf))
+
+.. _Virtual reassembly buffers in 6LoWPAN: https://datatracker.ietf.org/doc/draft-ietf-lwig-6lowpan-virtual-reassembly/
+.. _LLN Minimal Fragment Forwarding: https://datatracker.ietf.org/doc/draft-watteyne-6lo-minimal-fragment/
+.. _RFC4944: https://tools.ietf.org/html/rfc4944
+.. _Whitefield: https://github.com/whitefield-framework/whitefield
+.. _Rabi Sahoo: https://github.com/rabinsahoo
+.. _Fragment Forwarding implementation: https://github.com/rabinsahoo/6lowpan_fragment_forwarding
+.. _Sample1: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r1.png
+.. _Sample2: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r2.png
+.. _Sample3: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r3.png
