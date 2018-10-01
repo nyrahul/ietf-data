@@ -134,6 +134,7 @@ Observations
 
 Inferrence
 ----------
+
 1. In general the number of mac attempts/failure seems to have drastically
 increased in case of fragment forwarding. This is possibly because with
 fragment forwarding it is possible that multiple nodes might be in a state of
@@ -144,25 +145,23 @@ might be a problem especially with shared channels or shared cells in case of
 "might" be better than per hop reassembly, but this currently is pure
 speculation and we do not have any data for 6TiSCH env.
 
-Word about data reported by [Yatch](https://github.com/yatch) during IETF 101
+Word about data reported by Yatch_ during IETF 101
 -----------------------------------------------------------------------------
-Yatch's experiment ([slide
-16](https://datatracker.ietf.org/meeting/101/materials/slides-101-6lo-fragmentation-design-team-formation-update-00.pdf))
-primarily checked the impact of buffer unavailability on a bottleneck
-parent/grand-parent node. The 6TiSCH simulator used in the experiment did not
-have realistic wireless simulation. Yatch's data proved that fragment
-forwarding works much better when there is a bottleneck parent node which
-cannot hold enough reassembly buffers and has to drop previous uncompleted
-partially-reassembled payloads to make way for a new one. Essentially the
-analysis was more towards memory implications where fragment forwarding proved
-much better.
+`Yatch experiment`_ (check slide 16) primarily checked the impact of buffer
+unavailability on a bottleneck parent/grand-parent node. The 6TiSCH simulator
+used in the experiment did not have realistic wireless simulation. Yatch's data
+proved that fragment forwarding works much better when there is a bottleneck
+parent node which cannot hold enough reassembly buffers and has to drop
+previous uncompleted partially-reassembled payloads to make way for a new one.
+Essentially the analysis was more towards memory implications where fragment
+forwarding proved much better.
 
 Links
 -----
-1. [Raw Data](https://github.com/rabinsahoo/pcap_topo) for the experiments conducted (contains pcap, topology, config)
-2. [Whitefield Framework](https://github.com/whitefield-framework/whitefield)
-3. [Contiki Implementation with Fragment Forwarding](https://github.com/rabinsahoo/6lowpan_fragment_forwarding)
-4. Yatch's experiment ([slide 16](https://datatracker.ietf.org/meeting/101/materials/slides-101-6lo-fragmentation-design-team-formation-update-00.pdf))
+1. `Raw Data <https://github.com/rabinsahoo/pcap_topo>`_ for the experiments conducted (contains pcap, topology, config)
+2. Whitefield_ Framework
+3. Contiki with `Fragment Forwarding implementation`_
+4. `Yatch experiment`_
 
 .. _Virtual reassembly buffers in 6LoWPAN: https://datatracker.ietf.org/doc/draft-ietf-lwig-6lowpan-virtual-reassembly/
 .. _LLN Minimal Fragment Forwarding: https://datatracker.ietf.org/doc/draft-watteyne-6lo-minimal-fragment/
@@ -173,3 +172,5 @@ Links
 .. _Sample1: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r1.png
 .. _Sample2: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r2.png
 .. _Sample3: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r3.png
+.. _Yatch: https://github.com/yatch
+.. _Yatch experiment: https://datatracker.ietf.org/meeting/101/materials/slides-101-6lo-fragmentation-design-team-formation-update-00.pdf
