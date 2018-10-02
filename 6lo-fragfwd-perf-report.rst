@@ -1,6 +1,8 @@
 6Lo Fragment Forwarding Performance Report
 ==========================================
 
+.. contents::
+
 This document reports the performance of fragment forwarding vis-a-vis existing
 per-hop reassembly in 802.15.4 networks.
 
