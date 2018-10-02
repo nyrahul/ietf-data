@@ -203,8 +203,10 @@ Links
 
 Credits
 -------
-Thanks to Yasuyuki Tanaka for sharing his insights into his experiments.<br/>
-Thanks to Carsten Bormann and Pascal Thubert for great discussion on design team ML.<br/>
+Thanks to Yasuyuki Tanaka for sharing his insights into his experiments.
+
+Thanks to Carsten Bormann and Pascal Thubert for great discussion on design team ML.
+
 Thanks to Rabi Sahoo for the implementation and working all along.
 
 .. _Virtual reassembly buffers in 6LoWPAN: https://datatracker.ietf.org/doc/draft-ietf-lwig-6lowpan-virtual-reassembly/
