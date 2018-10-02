@@ -203,7 +203,7 @@ Links
 
 Credits
 -------
-Thanks to Yasuyuki Tanaka for sharing his insights into his experiments.
+Thanks to Yasuyuki Tanaka (Yatch_) for sharing his insights into his experiments.
 
 Thanks to Carsten Bormann and Pascal Thubert for great discussion on design team ML.
 
