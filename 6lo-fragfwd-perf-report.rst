@@ -27,13 +27,16 @@ fragmentation during authentication phase. Our aim was to check the impact of
 fragment forwarding on the authentication process which could possibly
 impact/reduce network convergence/time.
 
+Setup
+-----
+
 Test Tools/Code
----------------
+```````````````
 1. Whitefield_ Framework (with NS3 as AirLine and Contiki as Stackline) on Ubuntu 18.04 x86_64.
 2. `Fragment Forwarding implementation`_ in Contiki by `Rabi Sahoo`_
 
 Test Topology
--------------
+`````````````
 1. Number of nodes: 50
 2. Topology: Grid (10x5) [Sample1_], [Sample2_], [Sample3_]
 3. Inter-Node distance in the grid: x=80m, y=100m
@@ -41,8 +44,17 @@ Test Topology
 5. Max retry at mac layer: 3 (with exp backoff)
 6. Mac MTU = 127B
 
+Test observations/steps
+```````````````````````
+1. Check the overall Packet Delivery Rate i.e. how many complete payloads finally reach the BR?
+2. Check the min/max/avg latency i.e. time taken for payload to reach BR.
+3. Check the number of retries/failures in the mac layer
+4. Check the number of parent switches during the whole experiment
+5. Run every experiment 3 times
+6. Archive topology, pcap, config for every run
+
 Data transmission scheme
-------------------------
+````````````````````````
 Every node sends data every X seconds, where X is 40s, 80s, and 160s. After X
 seconds are elapsed, the node initiates transmission after a randomized delay
 in the range of 1 to 10 seconds. This ensures that all the nodes do not start
@@ -60,15 +72,6 @@ that subsequent transmissions on the peer nodes do not overlap. Please note
 that pacing is implemented purely on the original sender side i.e. a fixed
 amount of delay (for e.g. 50ms) is introduced before every fragment is
 transmitted.
-
-Test observations/steps
------------------------
-1. Check the overall Packet Delivery Rate i.e. how many complete payloads finally reach the BR?
-2. Check the min/max/avg latency i.e. time taken for payload to reach BR.
-3. Check the number of retries/failures in the mac layer
-4. Check the number of parent switches during the whole experiment
-5. Run every experiment 3 times
-6. Archive topology, pcap, config for every run
 
 Data
 ----
@@ -153,7 +156,7 @@ Experiment3: Send Rate=160s, UDP Payload size=1024B
 +--------------------+---+-----+----------+----------+----------+---------+-------------------------+----------+
 
 Graphs
-------
+``````
 
 +---------------------------------------+
 | Packet Delivery Rate Comparision      |
@@ -180,7 +183,7 @@ Observations
 6) If pacing is introduced, then it improves the fragment forwarding PDR drastically. But it also induces latency.
 
 Inferrence
-----------
+``````````
 
 1. In general the number of mac attempts/failure seems to have drastically increased in case of fragment forwarding. This is possibly because with fragment forwarding it is possible that multiple nodes might be in a state of transmission at the same time resulting in higher collisions.
 2. While fragment forwarding seems to be an interesting feature, the usability might be a problem especially with shared channels or shared cells in case of 6TiSCH. In case of dedicated cells, the performance of fragment forwarding "might" be better than per hop reassembly, but this currently is pure speculation and we do not have any data for 6TiSCH env.
