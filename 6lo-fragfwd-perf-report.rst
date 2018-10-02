@@ -97,9 +97,9 @@ Experiment1: Send Rate=40s, UDP Payload size=256B
 +--------------------+---+-----+----------+----------+----------+---------+-------------------------+----------+
 | With Frag Fwding   | 1 | 97% | 25365    | 1419     | 309      | 84      | 50/332/145              | 16       |
 | pacing interval    +---+-----+----------+----------+----------+---------+-------------------------+----------+
-| of 50ms            | 2 | 96% | 24282    | 1318     | 326      | 95      | 43/353/140              | 14       |
+| of 50ms            | 2 | 96% | 24282    | 1318     | 326      | 95      | 58/353/140              | 14       |
 |                    +---+-----+----------+----------+----------+---------+-------------------------+----------+
-|                    | 3 | 96% | 23605    | 1366     | 296      | 98      | 30/553/137              | 21       |
+|                    | 3 | 96% | 23605    | 1366     | 296      | 98      | 54/553/137              | 21       |
 +--------------------+---+-----+----------+----------+----------+---------+-------------------------+----------+
 
 Experiment2: Send Rate=80s, UDP Payload size=512B
@@ -203,8 +203,8 @@ Links
 
 Credits
 -------
-Thanks to Yatsuyuki Tanaka for sharing his insights into his experiments.
-Thanks to Carsten Bormann and Pascal Thubert for great discussion on design team ML.
+Thanks to Yasuyuki Tanaka for sharing his insights into his experiments.<br/>
+Thanks to Carsten Bormann and Pascal Thubert for great discussion on design team ML.<br/>
 Thanks to Rabi Sahoo for the implementation and working all along.
 
 .. _Virtual reassembly buffers in 6LoWPAN: https://datatracker.ietf.org/doc/draft-ietf-lwig-6lowpan-virtual-reassembly/
