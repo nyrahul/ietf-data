@@ -61,7 +61,7 @@ in the range of 1 to 10 seconds. This ensures that all the nodes do not start
 transmitting at the same time.
 
 The size of the payload is varied between 256, 512, and 1024 bytes. All the
-nodes transmit the data with the destination as the border router when the
+nodes transmit the data with the destination as the border router where the
 payload is finally accounted for.
 
 Pacing implementation
