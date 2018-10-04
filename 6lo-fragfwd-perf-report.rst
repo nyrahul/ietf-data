@@ -38,7 +38,9 @@ Test Tools/Code
 Test Topology
 `````````````
 1. Number of nodes: 50
-2. Topology: Grid (10x5) [Sample1_], [Sample2_], [Sample3_]
+2. Topology: Grid (10x5) 
+  a. Topology based on position: [Sample1_], [Sample2_]
+  b. Corresponding Topology based on tree-like structure from RPL: [Tree1_], [Tree2_]
 3. Inter-Node distance in the grid: x=80m, y=100m
 4. Wireless Configuration: 802.15.4 in 2.4GHz range with single channel (channel 26) unslotted CSMA mode of operation
 5. Max retry at mac layer: 3 (with exp backoff)
@@ -239,7 +241,8 @@ Thanks to Rabi Sahoo for the implementation and working all along.
 .. _Rabi Sahoo: https://github.com/rabinsahoo
 .. _Fragment Forwarding implementation: https://github.com/rabinsahoo/6lowpan_fragment_forwarding
 .. _Sample1: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r1.png
+.. _Tree1: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/tree_1024_r1.png
 .. _Sample2: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r2.png
-.. _Sample3: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/pos_1024_r3.png
+.. _Tree2: https://github.com/rabinsahoo/pcap_topo/blob/master/FragmentForwardingSim/tree_1024_r2.png
 .. _Yatch: https://github.com/yatch
 .. _Yatch experiment: https://datatracker.ietf.org/meeting/101/materials/slides-101-6lo-fragmentation-design-team-formation-update-00.pdf
